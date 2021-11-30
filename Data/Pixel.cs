@@ -75,25 +75,6 @@ namespace MyPhotoshop
             return p + numb;
         }
 
-        public static Pixel operator -(Pixel p, double numb)
-        {
-            return new Pixel(Trim(p.R - numb), Trim(p.G - numb), Trim(p.B - numb));
-        }
-
-        public static Pixel operator -(double numb, Pixel p)
-        {
-            return p - numb;
-        }
-
-        public static Pixel operator /(Pixel p, double numb)
-        {
-            return new Pixel(Trim(p.R / numb), Trim(p.G / numb), Trim(p.B / numb));
-        }
-
-        public static Pixel operator /(double numb, Pixel p)
-        {
-            return p - numb;
-        }
     }
 
 
