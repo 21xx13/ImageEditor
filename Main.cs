@@ -20,6 +20,15 @@ namespace MyPhotoshop
                     var b = Pixel.Trim(pixel.B + parameters.B / 100);
                     return new Pixel(r, g, b);
                 }));
+            window.AddFilter(new PixelFilter<ContrastParameters>("Контрастность",
+                (pixel, parameters) =>
+                {
+                    var r = Pixel.Trim((pixel.R * 255 * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient) / 255);
+                    var g = Pixel.Trim((pixel.G * 255 * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient) / 255);
+                    var b = Pixel.Trim((pixel.B * 255 * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient) / 255);
+                    return new Pixel(r, g, b);
+
+                }));
             window.AddFilter(new PixelFilter<EmptyParameters>("Оттенки серого",
                 (pixel, parameters) =>
                 {
@@ -37,7 +46,6 @@ namespace MyPhotoshop
 
             window.AddFilter(new TransformFilter<RotationParameters>("Свободное вращение",
                 new RotateTransformer()));
-
             Application.Run(window);
         }
     }
