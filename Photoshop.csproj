@@ -38,7 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Pixel.cs" />
-    <Compile Include="Filters\BrightnessParameters.cs" />
+    <Compile Include="Filters\ColorParameters.cs" />
     <Compile Include="Filters\EmptyParameters.cs" />
     <Compile Include="Filters\Parameters\IParametersHandler.cs" />
     <Compile Include="Filters\Parameters\ParametersExtension.cs" />
