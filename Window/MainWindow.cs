@@ -153,6 +153,7 @@ namespace MyPhotoshop
         {
             OpenFileDialog OPF = new OpenFileDialog();
             OPF.Filter = "Image Files |*.jpg;*.jpeg;*.png;*.gif";
+            OPF.Title = "Выберите изображение";
             if (OPF.ShowDialog() == DialogResult.OK)
                 LoadBitmap((Bitmap)Image.FromFile(OPF.FileName));
         }
@@ -161,7 +162,7 @@ namespace MyPhotoshop
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "JPeg Image|*.jpg|PNG Image|*.png|Gif Image|*.gif";
-            saveFileDialog1.Title = "Save an Image File";
+            saveFileDialog1.Title = "Сохранить изображение как";
             saveFileDialog1.ShowDialog();
 
             if (saveFileDialog1.FileName != "")
