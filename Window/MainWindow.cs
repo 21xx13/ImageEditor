@@ -10,7 +10,6 @@ namespace MyPhotoshop
     public class MainWindow : Form
     {
         Bitmap originalBmp;
-        Photo originalPhoto;
         PictureBox original;
         PictureBox processed;
         ComboBox filtersSelect;
@@ -19,6 +18,7 @@ namespace MyPhotoshop
         Button apply;
         Button select;
         Button save;
+        Button originalBtn;
 
         public MainWindow()
         {
@@ -43,33 +43,37 @@ namespace MyPhotoshop
             save.Click += SaveImage;
             Controls.Add(save);
 
+            originalBtn = new Button();
+            originalBtn.Text = "Исходное изображение";
+            originalBtn.Click += ReturnOriginal;
+            Controls.Add(originalBtn);
+
             apply = new Button();
             apply.Text = "Применить";
             apply.Enabled = false;
             apply.Click += Process;
             Controls.Add(apply);
 
-            Text = "Photoshop pre-alpha release";
+            Text = "Image Editor";
             FormBorderStyle = FormBorderStyle.FixedDialog;
 
-            LoadBitmap((Bitmap)Image.FromFile("cat.jpg"));
+            LoadBitmap((Bitmap)Image.FromFile("raccoons.jpg"));
         }
 
         public void LoadBitmap(Bitmap bmp)
         {
             originalBmp = bmp;
-            originalPhoto = Convertors.Bitmap2Photo(bmp);
 
             original.Image = originalBmp;
             original.Left = 0;
             original.Top = 0;
-            original.ClientSize = new Size(400, 300);
+            original.ClientSize = new Size(800, 600);
             original.SizeMode = PictureBoxSizeMode.Zoom;
 
-            processed.Left = 0;
-            processed.Top = original.Bottom;
-            processed.Size = original.Size;
-            processed.SizeMode = PictureBoxSizeMode.Zoom;
+            //processed.Left = 0;
+            //processed.Top = original.Bottom;
+            //processed.Size = original.Size;
+            //processed.SizeMode = PictureBoxSizeMode.Zoom;
 
             filtersSelect.Left = original.Right + 10;
             filtersSelect.Top = 20;
@@ -77,7 +81,7 @@ namespace MyPhotoshop
             filtersSelect.Height = 20;
 
 
-            ClientSize = new Size(filtersSelect.Right + 20, processed.Bottom);
+            ClientSize = new Size(filtersSelect.Right + 20, original.Bottom);
 
             apply.Left = ClientSize.Width - 120;
             apply.Top = ClientSize.Height - 50;
@@ -94,6 +98,11 @@ namespace MyPhotoshop
             save.Width = 100;
             save.Height = 40;
 
+            originalBtn.Left = ClientSize.Width - 120;
+            originalBtn.Top = ClientSize.Height - 200;
+            originalBtn.Width = 100;
+            originalBtn.Height = 40;
+
             FilterChanged(null, EventArgs.Empty);
         }
 
@@ -106,6 +115,10 @@ namespace MyPhotoshop
                 filtersSelect.SelectedIndex = 0;
                 apply.Enabled = true;
             }
+        }
+
+        void ReturnOriginal(object sender, EventArgs e) {
+            original.Image = originalBmp;
         }
 
         void FilterChanged(object sender, EventArgs e)
@@ -172,17 +185,17 @@ namespace MyPhotoshop
                 switch (saveFileDialog1.FilterIndex)
                 {
                     case 1:
-                        processed.Image.Save(fs,
+                        original.Image.Save(fs,
                           System.Drawing.Imaging.ImageFormat.Jpeg);
                         break;
 
                     case 2:
-                        processed.Image.Save(fs,
+                        original.Image.Save(fs,
                           System.Drawing.Imaging.ImageFormat.Png);
                         break;
 
                     case 3:
-                        processed.Image.Save(fs,
+                        original.Image.Save(fs,
                           System.Drawing.Imaging.ImageFormat.Gif);
                         break;
                 }
@@ -196,7 +209,8 @@ namespace MyPhotoshop
             var data = parametersControls.Select(z => (double)z.Value).ToArray();
             var filter = (IFilter)filtersSelect.SelectedItem;
             Photo result = null;
-            result = filter.Process(originalPhoto, data);
+            var ph = Convertors.Bitmap2Photo((Bitmap)original.Image);
+            result = filter.Process(ph, data);
             var resultBmp = Convertors.Photo2Bitmap(result);
             if (resultBmp.Width > originalBmp.Width || resultBmp.Height > originalBmp.Height)
             {
@@ -208,7 +222,7 @@ namespace MyPhotoshop
                 }
                 resultBmp = newBmp;
             }
-            processed.Image = resultBmp;
+            original.Image = resultBmp;
         }
     }
 }

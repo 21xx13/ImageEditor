@@ -67,11 +67,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="cat.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="raccoons.jpg" />
+    <Content Include="raccoons.png" />
     <Content Include="Tasks.txt" />
   </ItemGroup>
 </Project>
