@@ -18,6 +18,7 @@ namespace MyPhotoshop
         List<NumericUpDown> parametersControls;
         Button apply;
         Button select;
+        Button save;
 
         public MainWindow()
         {
@@ -37,6 +38,11 @@ namespace MyPhotoshop
             select.Click += LoadPhoto;
             Controls.Add(select);
 
+            save = new Button();
+            save.Text = "Сохранить как";
+            save.Click += SaveImage;
+            Controls.Add(save);
+
             apply = new Button();
             apply.Text = "Применить";
             apply.Enabled = false;
@@ -45,8 +51,6 @@ namespace MyPhotoshop
 
             Text = "Photoshop pre-alpha release";
             FormBorderStyle = FormBorderStyle.FixedDialog;
-
-
 
             LoadBitmap((Bitmap)Image.FromFile("cat.jpg"));
         }
@@ -84,6 +88,11 @@ namespace MyPhotoshop
             select.Top = ClientSize.Height - 100;
             select.Width = 100;
             select.Height = 40;
+
+            save.Left = ClientSize.Width - 120;
+            save.Top = ClientSize.Height - 150;
+            save.Width = 100;
+            save.Height = 40;
 
             FilterChanged(null, EventArgs.Empty);
         }
@@ -146,6 +155,38 @@ namespace MyPhotoshop
             OPF.Filter = "Image Files |*.jpg;*.jpeg;*.png;*.gif";
             if (OPF.ShowDialog() == DialogResult.OK)
                 LoadBitmap((Bitmap)Image.FromFile(OPF.FileName));
+        }
+
+        private void SaveImage(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "JPeg Image|*.jpg|PNG Image|*.png|Gif Image|*.gif";
+            saveFileDialog1.Title = "Save an Image File";
+            saveFileDialog1.ShowDialog();
+
+            if (saveFileDialog1.FileName != "")
+            {
+                FileStream fs =
+                    (FileStream)saveFileDialog1.OpenFile();
+                switch (saveFileDialog1.FilterIndex)
+                {
+                    case 1:
+                        processed.Image.Save(fs,
+                          System.Drawing.Imaging.ImageFormat.Jpeg);
+                        break;
+
+                    case 2:
+                        processed.Image.Save(fs,
+                          System.Drawing.Imaging.ImageFormat.Png);
+                        break;
+
+                    case 3:
+                        processed.Image.Save(fs,
+                          System.Drawing.Imaging.ImageFormat.Gif);
+                        break;
+                }
+                fs.Close();
+            }
         }
 
 
