@@ -67,4 +67,9 @@
   <ItemGroup>
     <Content Include="raccoons.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Window\MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

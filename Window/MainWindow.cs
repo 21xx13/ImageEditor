@@ -10,38 +10,39 @@ namespace MyPhotoshop
     public class MainWindow : Form
     {
         Bitmap originalBmp;
-        PictureBox original;
-        PictureBox processed;
+        PictureBox imageArea;
         ComboBox filtersSelect;
         Panel parametersPanel;
         List<TrackBar> parametersControls;
         Button apply;
-        Button select;
-        Button save;
         Button originalBtn;
+        MenuStrip menuStrip;
+        ToolStripMenuItem fileMenu;
+        ToolStripMenuItem openItem;
+        ToolStripMenuItem saveItem;
 
         public MainWindow()
         {
-            original = new PictureBox();
-            Controls.Add(original);
+            menuStrip = new MenuStrip();
+            fileMenu = new ToolStripMenuItem();
+            openItem = new ToolStripMenuItem();
+            saveItem = new ToolStripMenuItem();
+            menuStrip.Items.Add(fileMenu);
+            fileMenu.DropDownItems.AddRange(new ToolStripItem[] {openItem, saveItem});
+            fileMenu.Text = "Файл";
+            openItem.Text = "Открыть";
+            saveItem.Text = "Сохранить";
+            saveItem.Click += SaveImage;
+            openItem.Click += LoadPhoto;
+            Controls.Add(menuStrip);            
 
-            processed = new PictureBox();
-            Controls.Add(processed);
+            imageArea = new PictureBox();
+            Controls.Add(imageArea);
 
             filtersSelect = new ComboBox();
             filtersSelect.DropDownStyle = ComboBoxStyle.DropDownList;
             filtersSelect.SelectedIndexChanged += FilterChanged;
             Controls.Add(filtersSelect);
-
-            select = new Button();
-            select.Text = "Выбрать изображение";
-            select.Click += LoadPhoto;
-            Controls.Add(select);
-
-            save = new Button();
-            save.Text = "Сохранить как";
-            save.Click += SaveImage;
-            Controls.Add(save);
 
             originalBtn = new Button();
             originalBtn.Text = "Исходное изображение";
@@ -63,40 +64,24 @@ namespace MyPhotoshop
         public void LoadBitmap(Bitmap bmp)
         {
             originalBmp = bmp;
+            menuStrip.Top = 0;
+            menuStrip.Left = 0;
+            imageArea.Image = originalBmp;
+            imageArea.Left = 0;
+            imageArea.Top = menuStrip.Bottom;
+            imageArea.ClientSize = new Size(800, 600);
+            imageArea.SizeMode = PictureBoxSizeMode.Zoom;
 
-            original.Image = originalBmp;
-            original.Left = 0;
-            original.Top = 0;
-            original.ClientSize = new Size(800, 600);
-            original.SizeMode = PictureBoxSizeMode.Zoom;
-
-            //processed.Left = 0;
-            //processed.Top = original.Bottom;
-            //processed.Size = original.Size;
-            //processed.SizeMode = PictureBoxSizeMode.Zoom;
-
-            filtersSelect.Left = original.Right + 10;
-            filtersSelect.Top = 20;
+            filtersSelect.Left = imageArea.Right + 10;
+            filtersSelect.Top = menuStrip.Bottom + 10;
             filtersSelect.Width = 200;
             filtersSelect.Height = 20;
-
-
-            ClientSize = new Size(filtersSelect.Right + 20, original.Bottom);
-
+                       
+            ClientSize = new Size(filtersSelect.Right + 20, imageArea.Bottom);
             apply.Left = ClientSize.Width - 120;
             apply.Top = ClientSize.Height - 50;
             apply.Width = 100;
             apply.Height = 40;
-
-            select.Left = ClientSize.Width - 120;
-            select.Top = ClientSize.Height - 100;
-            select.Width = 100;
-            select.Height = 40;
-
-            save.Left = ClientSize.Width - 120;
-            save.Top = ClientSize.Height - 150;
-            save.Width = 100;
-            save.Height = 40;
 
             originalBtn.Left = ClientSize.Width - 230;
             originalBtn.Top = ClientSize.Height - 50;
@@ -118,7 +103,7 @@ namespace MyPhotoshop
         }
 
         void ReturnOriginal(object sender, EventArgs e) {
-            original.Image = originalBmp;
+            imageArea.Image = originalBmp;
         }
 
         
@@ -145,7 +130,6 @@ namespace MyPhotoshop
                 label.Width = parametersPanel.Width;
                 label.Height = 40;
 
-
                 var box = new TrackBar();
                 box.Left = 0;
                 box.Top = label.Bottom;
@@ -156,29 +140,15 @@ namespace MyPhotoshop
                 box.Maximum = (int)param.MaxValue;
                 box.Minimum = (int)param.MinValue;
                 box.LargeChange = 3;
+
                 label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value);
                 box.Scroll += (a, b) => { label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value); };
                 parametersPanel.Controls.Add(label);
-
-                //var box = new NumericUpDown();
-                //box.Left = 0;
-                //box.Top = label.Bottom;
-                //box.Width = parametersPanel.Width;
-                //box.Height = 20;
-                //box.Value = (decimal)param.DefaultValue;
-                //box.Increment = (decimal)param.Increment / 3;
-                //box.Maximum = (decimal)param.MaxValue;
-                //box.Minimum = (decimal)param.MinValue;
-                //box.DecimalPlaces = 2;
                 parametersPanel.Controls.Add(box);
                 y += label.Height + 65;
                 parametersControls.Add(box);
             }
             Controls.Add(parametersPanel);
-        }
-
-        void ScrollLabel(object sender, EventArgs empty) {
-            
         }
 
         void LoadPhoto(object sender, EventArgs empty)
@@ -204,17 +174,17 @@ namespace MyPhotoshop
                 switch (saveFileDialog1.FilterIndex)
                 {
                     case 1:
-                        original.Image.Save(fs,
+                        imageArea.Image.Save(fs,
                           System.Drawing.Imaging.ImageFormat.Jpeg);
                         break;
 
                     case 2:
-                        original.Image.Save(fs,
+                        imageArea.Image.Save(fs,
                           System.Drawing.Imaging.ImageFormat.Png);
                         break;
 
                     case 3:
-                        original.Image.Save(fs,
+                        imageArea.Image.Save(fs,
                           System.Drawing.Imaging.ImageFormat.Gif);
                         break;
                 }
@@ -228,7 +198,7 @@ namespace MyPhotoshop
             var data = parametersControls.Select(z => (double)z.Value).ToArray();
             var filter = (IFilter)filtersSelect.SelectedItem;
             Photo result = null;
-            var ph = Convertors.Bitmap2Photo((Bitmap)original.Image);
+            var ph = Convertors.Bitmap2Photo((Bitmap)imageArea.Image);
             result = filter.Process(ph, data);
             var resultBmp = Convertors.Photo2Bitmap(result);
             if (resultBmp.Width > originalBmp.Width || resultBmp.Height > originalBmp.Height)
@@ -241,7 +211,8 @@ namespace MyPhotoshop
                 }
                 resultBmp = newBmp;
             }
-            original.Image = resultBmp;
+            imageArea.Image = resultBmp;
         }
+
     }
 }
