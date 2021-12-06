@@ -8,7 +8,7 @@ namespace MyPhotoshop
     public class LighteningParameters : IParameters
     {
         
-        [ParameterInfo(Name = "Коэффициент", MaxValue = 10, MinValue = 0, Increment = 0.1, DefaultValue = 1)]
+        [ParameterInfo(Name = "Коэффициент", MaxValue = 100, MinValue = 0, Increment = 1, DefaultValue = 10)]
         public double Coefficient { get; set; }
     }
 }

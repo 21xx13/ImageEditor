@@ -11,7 +11,7 @@ namespace MyPhotoshop
         {
             var window = new MainWindow();
             window.AddFilter(new PixelFilter<LighteningParameters>("Осветление/затемнение",
-                (pixel, parameters) => pixel * parameters.Coefficient));
+                (pixel, parameters) => pixel * (parameters.Coefficient/10)));
             window.AddFilter(new PixelFilter<ColorParameters>("Цветовой баланс",
                 (pixel, parameters) =>
                 {

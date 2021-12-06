@@ -43,9 +43,7 @@
     <Compile Include="Filters\EmptyParameters.cs" />
     <Compile Include="Filters\Parameters\IParametersHandler.cs" />
     <Compile Include="Filters\Parameters\ParametersExtension.cs" />
-    <Compile Include="Filters\Parameters\ExpressionParametersHandler.cs" />
     <Compile Include="Filters\Parameters\StaticParametersHandler.cs" />
-    <Compile Include="Filters\Parameters\SimpleParametersHandler.cs" />
     <Compile Include="Filters\PixelFilter.cs" />
     <Compile Include="Filters\Parameters\IParameters.cs" />
     <Compile Include="Filters\LighteningParameters.cs" />
@@ -68,7 +66,5 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Content Include="raccoons.jpg" />
-    <Content Include="raccoons.png" />
-    <Content Include="Tasks.txt" />
   </ItemGroup>
 </Project>

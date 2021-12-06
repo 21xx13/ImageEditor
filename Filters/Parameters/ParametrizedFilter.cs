@@ -8,7 +8,7 @@ namespace MyPhotoshop
     public abstract class ParametrizedFilter<TParameters> : IFilter
         where TParameters : IParameters, new()
     {
-        IParametersHandler<TParameters> handler = new ExpressionParametersHandler<TParameters>();
+        IParametersHandler<TParameters> handler = new StaticParametersHandler<TParameters>();
         public ParameterInfo[] GetParameters()
         {
             return handler.GetDescription();

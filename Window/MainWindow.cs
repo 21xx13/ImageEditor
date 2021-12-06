@@ -14,7 +14,7 @@ namespace MyPhotoshop
         PictureBox processed;
         ComboBox filtersSelect;
         Panel parametersPanel;
-        List<NumericUpDown> parametersControls;
+        List<TrackBar> parametersControls;
         Button apply;
         Button select;
         Button save;
@@ -98,8 +98,8 @@ namespace MyPhotoshop
             save.Width = 100;
             save.Height = 40;
 
-            originalBtn.Left = ClientSize.Width - 120;
-            originalBtn.Top = ClientSize.Height - 200;
+            originalBtn.Left = ClientSize.Width - 230;
+            originalBtn.Top = ClientSize.Height - 50;
             originalBtn.Width = 100;
             originalBtn.Height = 40;
 
@@ -121,12 +121,14 @@ namespace MyPhotoshop
             original.Image = originalBmp;
         }
 
+        
+
         void FilterChanged(object sender, EventArgs e)
         {
             var filter = (IFilter)filtersSelect.SelectedItem;
             if (filter == null) return;
             if (parametersPanel != null) Controls.Remove(parametersPanel);
-            parametersControls = new List<NumericUpDown>();
+            parametersControls = new List<TrackBar>();
             parametersPanel = new Panel();
             parametersPanel.Left = filtersSelect.Left;
             parametersPanel.Top = filtersSelect.Bottom + 10;
@@ -140,26 +142,43 @@ namespace MyPhotoshop
                 var label = new Label();
                 label.Left = 0;
                 label.Top = y;
-                label.Width = parametersPanel.Width - 50;
-                label.Height = 20;
-                label.Text = param.Name;
+                label.Width = parametersPanel.Width;
+                label.Height = 40;
+
+
+                var box = new TrackBar();
+                box.Left = 0;
+                box.Top = label.Bottom;
+                box.Width = parametersPanel.Width;
+                box.Height = 20;
+                box.Value = (int)param.DefaultValue;
+                box.TickFrequency = 5;
+                box.Maximum = (int)param.MaxValue;
+                box.Minimum = (int)param.MinValue;
+                box.LargeChange = 3;
+                label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value);
+                box.Scroll += (a, b) => { label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value); };
                 parametersPanel.Controls.Add(label);
 
-                var box = new NumericUpDown();
-                box.Left = label.Right;
-                box.Top = y;
-                box.Width = 50;
-                box.Height = 20;
-                box.Value = (decimal)param.DefaultValue;
-                box.Increment = (decimal)param.Increment / 3;
-                box.Maximum = (decimal)param.MaxValue;
-                box.Minimum = (decimal)param.MinValue;
-                box.DecimalPlaces = 2;
+                //var box = new NumericUpDown();
+                //box.Left = 0;
+                //box.Top = label.Bottom;
+                //box.Width = parametersPanel.Width;
+                //box.Height = 20;
+                //box.Value = (decimal)param.DefaultValue;
+                //box.Increment = (decimal)param.Increment / 3;
+                //box.Maximum = (decimal)param.MaxValue;
+                //box.Minimum = (decimal)param.MinValue;
+                //box.DecimalPlaces = 2;
                 parametersPanel.Controls.Add(box);
-                y += label.Height + 5;
+                y += label.Height + 65;
                 parametersControls.Add(box);
             }
             Controls.Add(parametersPanel);
+        }
+
+        void ScrollLabel(object sender, EventArgs empty) {
+            
         }
 
         void LoadPhoto(object sender, EventArgs empty)
