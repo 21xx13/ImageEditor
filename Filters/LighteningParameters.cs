@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyPhotoshop
 {
-    public class LighteningParameters : IParameters
+    public class LighteningParameters 
     {
         
         [ParameterInfo(Name = "Коэффициент", MaxValue = 100, MinValue = 0, Increment = 1, DefaultValue = 10)]

@@ -15,26 +15,32 @@ namespace MyPhotoshop
         Panel parametersPanel;
         List<TrackBar> parametersControls;
         Button apply;
-        Button originalBtn;
         MenuStrip menuStrip;
         ToolStripMenuItem fileMenu;
         ToolStripMenuItem openItem;
+        ToolStripMenuItem editMenu;
         ToolStripMenuItem saveItem;
+        ToolStripMenuItem undoItem;
+        ToolStripMenuItem redoItem;
+        ToolStripMenuItem originalItem;
+        UndoRedoHistory<Photo> photoHistory = new UndoRedoHistory<Photo>();
 
         public MainWindow()
         {
             menuStrip = new MenuStrip();
-            fileMenu = new ToolStripMenuItem();
-            openItem = new ToolStripMenuItem();
-            saveItem = new ToolStripMenuItem();
-            menuStrip.Items.Add(fileMenu);
-            fileMenu.DropDownItems.AddRange(new ToolStripItem[] {openItem, saveItem});
-            fileMenu.Text = "Файл";
-            openItem.Text = "Открыть";
-            saveItem.Text = "Сохранить";
-            saveItem.Click += SaveImage;
-            openItem.Click += LoadPhoto;
-            Controls.Add(menuStrip);            
+            fileMenu = CreateToolStripItem("Файл", null);
+            editMenu = CreateToolStripItem("Редактирование", null);
+            openItem = CreateToolStripItem("Открыть", LoadPhoto);
+            saveItem = CreateToolStripItem("Сохранить", SaveImage);
+            undoItem = CreateToolStripItem("Шаг назад", Undo);
+            redoItem = CreateToolStripItem("Шаг вперед", Redo);
+            originalItem = CreateToolStripItem("Исходное изображение", ReturnOriginal);
+            menuStrip.Items.AddRange(new ToolStripItem[] { fileMenu, editMenu });
+            fileMenu.DropDownItems.AddRange(new ToolStripItem[] { openItem, saveItem });
+            editMenu.DropDownItems.AddRange(new ToolStripItem[] { undoItem, redoItem, originalItem });
+            undoItem.ShortcutKeys = Keys.Control | Keys.Z;
+            redoItem.ShortcutKeys = Keys.Control | Keys.Y;
+            Controls.Add(menuStrip);
 
             imageArea = new PictureBox();
             Controls.Add(imageArea);
@@ -44,11 +50,6 @@ namespace MyPhotoshop
             filtersSelect.SelectedIndexChanged += FilterChanged;
             Controls.Add(filtersSelect);
 
-            originalBtn = new Button();
-            originalBtn.Text = "Исходное изображение";
-            originalBtn.Click += ReturnOriginal;
-            Controls.Add(originalBtn);
-
             apply = new Button();
             apply.Text = "Применить";
             apply.Enabled = false;
@@ -56,9 +57,16 @@ namespace MyPhotoshop
             Controls.Add(apply);
 
             Text = "Image Editor";
-            FormBorderStyle = FormBorderStyle.FixedDialog;
 
             LoadBitmap((Bitmap)Image.FromFile("raccoons.jpg"));
+        }
+
+        ToolStripMenuItem CreateToolStripItem(string text, EventHandler e)
+        {
+            var item = new ToolStripMenuItem();
+            item.Text = text;
+            item.Click += e;
+            return item;
         }
 
         public void LoadBitmap(Bitmap bmp)
@@ -67,6 +75,7 @@ namespace MyPhotoshop
             menuStrip.Top = 0;
             menuStrip.Left = 0;
             imageArea.Image = originalBmp;
+            photoHistory.Do(Convertors.Bitmap2Photo(originalBmp));
             imageArea.Left = 0;
             imageArea.Top = menuStrip.Bottom;
             imageArea.ClientSize = new Size(800, 600);
@@ -76,18 +85,14 @@ namespace MyPhotoshop
             filtersSelect.Top = menuStrip.Bottom + 10;
             filtersSelect.Width = 200;
             filtersSelect.Height = 20;
-                       
+
             ClientSize = new Size(filtersSelect.Right + 20, imageArea.Bottom);
             apply.Left = ClientSize.Width - 120;
             apply.Top = ClientSize.Height - 50;
             apply.Width = 100;
             apply.Height = 40;
 
-            originalBtn.Left = ClientSize.Width - 230;
-            originalBtn.Top = ClientSize.Height - 50;
-            originalBtn.Width = 100;
-            originalBtn.Height = 40;
-
+            CheckStatusBtn();
             FilterChanged(null, EventArgs.Empty);
         }
 
@@ -102,11 +107,28 @@ namespace MyPhotoshop
             }
         }
 
-        void ReturnOriginal(object sender, EventArgs e) {
+        void ReturnOriginal(object sender, EventArgs e)
+        {
             imageArea.Image = originalBmp;
         }
 
-        
+        void Undo(object sender, EventArgs e)
+        {
+            imageArea.Image = Convertors.Photo2Bitmap(photoHistory.Undo());
+            CheckStatusBtn();
+        }
+
+        void Redo(object sender, EventArgs e)
+        {
+            imageArea.Image = Convertors.Photo2Bitmap(photoHistory.Redo());
+            CheckStatusBtn();
+        }
+
+        void CheckStatusBtn()
+        {
+            undoItem.Enabled = !photoHistory.IsEmptyUndo;
+            redoItem.Enabled = !photoHistory.IsEmptyRedo;
+        }
 
         void FilterChanged(object sender, EventArgs e)
         {
@@ -119,7 +141,6 @@ namespace MyPhotoshop
             parametersPanel.Top = filtersSelect.Bottom + 10;
             parametersPanel.Width = filtersSelect.Width;
             parametersPanel.Height = ClientSize.Height - parametersPanel.Top;
-
             int y = 0;
 
             foreach (var param in filter.GetParameters())
@@ -139,7 +160,7 @@ namespace MyPhotoshop
                 box.TickFrequency = 5;
                 box.Maximum = (int)param.MaxValue;
                 box.Minimum = (int)param.MinValue;
-                box.LargeChange = 3;
+
 
                 label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value);
                 box.Scroll += (a, b) => { label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value); };
@@ -169,23 +190,17 @@ namespace MyPhotoshop
 
             if (saveFileDialog1.FileName != "")
             {
-                FileStream fs =
-                    (FileStream)saveFileDialog1.OpenFile();
+                FileStream fs = (FileStream)saveFileDialog1.OpenFile();
                 switch (saveFileDialog1.FilterIndex)
                 {
                     case 1:
-                        imageArea.Image.Save(fs,
-                          System.Drawing.Imaging.ImageFormat.Jpeg);
+                        imageArea.Image.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
                         break;
-
                     case 2:
-                        imageArea.Image.Save(fs,
-                          System.Drawing.Imaging.ImageFormat.Png);
+                        imageArea.Image.Save(fs, System.Drawing.Imaging.ImageFormat.Png);
                         break;
-
                     case 3:
-                        imageArea.Image.Save(fs,
-                          System.Drawing.Imaging.ImageFormat.Gif);
+                        imageArea.Image.Save(fs, System.Drawing.Imaging.ImageFormat.Gif);
                         break;
                 }
                 fs.Close();
@@ -200,6 +215,8 @@ namespace MyPhotoshop
             Photo result = null;
             var ph = Convertors.Bitmap2Photo((Bitmap)imageArea.Image);
             result = filter.Process(ph, data);
+            photoHistory.Do(result);
+            CheckStatusBtn();
             var resultBmp = Convertors.Photo2Bitmap(result);
             if (resultBmp.Width > originalBmp.Width || resultBmp.Height > originalBmp.Height)
             {
@@ -213,6 +230,5 @@ namespace MyPhotoshop
             }
             imageArea.Image = resultBmp;
         }
-
     }
 }

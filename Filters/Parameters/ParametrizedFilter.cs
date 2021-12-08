@@ -6,13 +6,10 @@ using System.Text;
 namespace MyPhotoshop
 {
     public abstract class ParametrizedFilter<TParameters> : IFilter
-        where TParameters : IParameters, new()
+        where TParameters : new()
     {
-        IParametersHandler<TParameters> handler = new StaticParametersHandler<TParameters>();
-        public ParameterInfo[] GetParameters()
-        {
-            return handler.GetDescription();
-        }
+        IParametersHandler<TParameters> handler = new ParametersHandler<TParameters>();
+        public ParameterInfo[] GetParameters() => handler.GetDescription();
 
         public Photo Process(Photo photo, double[] values)
         {

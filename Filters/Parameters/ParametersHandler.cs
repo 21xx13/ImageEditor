@@ -6,13 +6,13 @@ using System.Text;
 
 namespace MyPhotoshop
 {
-    public class StaticParametersHandler<TParameters> : IParametersHandler<TParameters>
-        where TParameters: IParameters, new()
+    public class ParametersHandler<TParameters> : IParametersHandler<TParameters>
+        where TParameters: new()
     {
         static PropertyInfo[] properties;
         static ParameterInfo[] descriptions;
 
-        static StaticParametersHandler()
+        static ParametersHandler()
         {
             properties = typeof(TParameters).GetProperties()
                 .Where(x => x.GetCustomAttributes(typeof(ParameterInfo), false).Length > 0).ToArray();
@@ -30,15 +30,11 @@ namespace MyPhotoshop
             if (properties.Length != values.Length)
                 throw new ArgumentException();
             for (int i = 0; i < values.Length; i++)
-            {
                 properties[i].SetValue(parameters, values[i], new object[0]);
-            }
+
             return parameters;
         }
 
-        public ParameterInfo[] GetDescription()
-        {
-            return descriptions;
-        }
+        public ParameterInfo[] GetDescription() => descriptions;
     }
 }

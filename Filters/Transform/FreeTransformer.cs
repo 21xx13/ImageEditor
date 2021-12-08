@@ -19,10 +19,7 @@ namespace MyPhotoshop
             this.sizeTransformer = sizeTransformer;
         }
 
-        public Point? MapPoint(Point newPoint)
-        {
-            return pointTransformer(newPoint, oldSize);
-        }
+        public Point? MapPoint(Point newPoint) => pointTransformer(newPoint, oldSize);
 
         public void Prepare(Size size, EmptyParameters parameters)
         {

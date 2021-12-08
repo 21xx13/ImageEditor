@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MyPhotoshop
 {
-    public interface ITransformer<TParameters> where TParameters : IParameters, new()
+    public interface ITransformer<TParameters> where TParameters : new()
     {
         void Prepare(Size size, TParameters parameters);
         Size ResultSize { get; }

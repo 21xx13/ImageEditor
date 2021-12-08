@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyPhotoshop
 {
-        public class ContrastParameters : IParameters
+        public class ContrastParameters
         {
 
             [ParameterInfo(Name = "Контрастность", MaxValue = 50, MinValue = -50, Increment = 1, DefaultValue = 0)]

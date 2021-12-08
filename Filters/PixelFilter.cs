@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MyPhotoshop
 {
     public class PixelFilter<TParameters> : ParametrizedFilter<TParameters>
-        where TParameters : IParameters, new()
+        where TParameters : new()
     {
         string name;
         Func<Pixel, TParameters, Pixel> processor;

@@ -31,8 +31,7 @@ namespace MyPhotoshop
             window.AddFilter(new PixelFilter<EmptyParameters>("Оттенки серого",
                 (pixel, parameters) =>
                 {
-                    var brightness = (0.299 * (pixel.R)) +
-                              0.587 * (pixel.G) + 0.114 * (pixel.B);
+                    var brightness = (0.299 * (pixel.R)) + 0.587 * (pixel.G) + 0.114 * (pixel.B);
                     return new Pixel(brightness, brightness, brightness);
                 }));
             window.AddFilter(new PixelFilter<EmptyParameters>("Сепия",

@@ -7,7 +7,7 @@ using System.Text;
 namespace MyPhotoshop
 {
     public class TransformFilter<TParameters> : ParametrizedFilter<TParameters>
-        where TParameters: IParameters, new()
+        where TParameters: new()
     {
         ITransformer<TParameters> transformer;
         string name;
@@ -34,9 +34,6 @@ namespace MyPhotoshop
             return result;
         }
 
-        public override string ToString()
-        {
-            return name;
-        }
+        public override string ToString() => name;
     }
 }

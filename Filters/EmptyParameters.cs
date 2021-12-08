@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyPhotoshop
 {
-    public class EmptyParameters : IParameters
+    public class EmptyParameters
     {
         
     }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyPhotoshop
 {
-    public class ColorParameters : IParameters
+    public class ColorParameters
     {
 
         [ParameterInfo(Name = "Красный", MaxValue = 100, MinValue = 0, Increment = 1, DefaultValue = 0)]
