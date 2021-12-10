@@ -6,11 +6,11 @@ using System.Text;
 
 namespace MyPhotoshop
 {
-    public class ParametersHandler<TParameters> : IParametersHandler<TParameters>
+    public class ParametersHandler<TParameters>
         where TParameters: new()
     {
-        static PropertyInfo[] properties;
-        static ParameterInfo[] descriptions;
+        readonly static PropertyInfo[] properties;
+        readonly static ParameterInfo[] descriptions;
 
         static ParametersHandler()
         {

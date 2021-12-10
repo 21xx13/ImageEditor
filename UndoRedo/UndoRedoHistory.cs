@@ -8,8 +8,8 @@ namespace MyPhotoshop
     public class UndoRedoHistory<T>
     {
         private bool inUndoRedo = false;
-        private Stack<T> undoStack = new Stack<T>();
-        private Stack<T> redoStack = new Stack<T>();
+        readonly private Stack<T> undoStack = new Stack<T>();
+        readonly private Stack<T> redoStack = new Stack<T>();
         public bool IsEmptyUndo { get => undoStack.Count == 1; }
         public bool IsEmptyRedo { get => redoStack.Count == 0; }
 

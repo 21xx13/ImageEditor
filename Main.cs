@@ -11,21 +11,21 @@ namespace MyPhotoshop
         {
             var window = new MainWindow();
             window.AddFilter(new PixelFilter<LighteningParameters>("Осветление/затемнение",
-                (pixel, parameters) => pixel * (parameters.Coefficient/10)));
+                (pixel, parameters) => pixel * (parameters.Coefficient/50)));
             window.AddFilter(new PixelFilter<ColorParameters>("Цветовой баланс",
                 (pixel, parameters) =>
                 {
-                    var r = Pixel.Trim(pixel.R + parameters.R / 100);
-                    var g = Pixel.Trim(pixel.G + parameters.G / 100);
-                    var b = Pixel.Trim(pixel.B + parameters.B / 100);
+                    var r = Pixel.Trim(pixel.R + parameters.R * 128 / 100);
+                    var g = Pixel.Trim(pixel.G + parameters.G * 128 / 100);
+                    var b = Pixel.Trim(pixel.B + parameters.B * 128 / 100);
                     return new Pixel(r, g, b);
                 }));
             window.AddFilter(new PixelFilter<ContrastParameters>("Контрастность",
                 (pixel, parameters) =>
                 {
-                    var r = Pixel.Trim((pixel.R * 255 * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient) / 255);
-                    var g = Pixel.Trim((pixel.G * 255 * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient) / 255);
-                    var b = Pixel.Trim((pixel.B * 255 * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient) / 255);
+                    var r = Pixel.Trim((pixel.R * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient));
+                    var g = Pixel.Trim((pixel.G * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient));
+                    var b = Pixel.Trim((pixel.B * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient));
                     return new Pixel(r, g, b);
                 }));
             window.AddFilter(new PixelFilter<EmptyParameters>("Оттенки серого",
@@ -45,7 +45,7 @@ namespace MyPhotoshop
             window.AddFilter(new PixelFilter<EmptyParameters>("Негатив",
                 (pixel, parameters) =>
                 {
-                    return new Pixel(1 - pixel.R, 1 - pixel.G, 1 - pixel.B);
+                    return new Pixel(255 - pixel.R, 255 - pixel.G, 255 - pixel.B);
                 }));
 
             window.AddFilter(new TransformFilter("Отразить по горизонтали", size => size,

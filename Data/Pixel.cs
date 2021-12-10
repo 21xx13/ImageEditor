@@ -20,14 +20,14 @@ namespace MyPhotoshop
         {
             if (value < 0)
                 return 0;
-            if (value > 1) 
-                return 1;
+            if (value > 255) 
+                return 255;
             return value;
         }
 
         private double Check(double value)
         {
-            if (value < 0 && value > 1) throw new ArgumentException();
+            if (value < 0 && value > 255) throw new ArgumentException("Значение не может быть меньше 0 или больше 255");
             return value;
         }
         public double R
@@ -76,6 +76,4 @@ namespace MyPhotoshop
         }
 
     }
-
-
 }

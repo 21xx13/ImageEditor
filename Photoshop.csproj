@@ -41,7 +41,6 @@
     <Compile Include="Filters\ColorParameters.cs" />
     <Compile Include="Filters\ContrastParameters.cs" />
     <Compile Include="Filters\EmptyParameters.cs" />
-    <Compile Include="Filters\Parameters\IParametersHandler.cs" />
     <Compile Include="Filters\Parameters\ParametersHandler.cs" />
     <Compile Include="Filters\PixelFilter.cs" />
     <Compile Include="Filters\LighteningParameters.cs" />

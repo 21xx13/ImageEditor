@@ -9,25 +9,26 @@ namespace MyPhotoshop
 {
     public class MainWindow : Form
     {
-        Bitmap originalBmp;
-        PictureBox imageArea;
-        ComboBox filtersSelect;
+        Bitmap originalBmp;     
         Panel parametersPanel;
         List<TrackBar> parametersControls;
-        Button apply;
-        MenuStrip menuStrip;
-        ToolStripMenuItem fileMenu;
-        ToolStripMenuItem openItem;
-        ToolStripMenuItem editMenu;
-        ToolStripMenuItem saveItem;
-        ToolStripMenuItem undoItem;
-        ToolStripMenuItem redoItem;
-        ToolStripMenuItem originalItem;
-        UndoRedoHistory<Photo> photoHistory = new UndoRedoHistory<Photo>();
+        readonly PictureBox imageArea;
+        readonly ComboBox filtersSelect;
+        readonly Button apply;
+        readonly MenuStrip menuStrip;
+        readonly ToolStripMenuItem fileMenu;
+        readonly ToolStripMenuItem openItem;
+        readonly ToolStripMenuItem editMenu;
+        readonly ToolStripMenuItem saveItem;
+        readonly ToolStripMenuItem undoItem;
+        readonly ToolStripMenuItem redoItem;
+        readonly ToolStripMenuItem originalItem;
+        readonly UndoRedoHistory<Photo> photoHistory;
 
         public MainWindow()
         {
             menuStrip = new MenuStrip();
+            photoHistory = new UndoRedoHistory<Photo>();
             fileMenu = CreateToolStripItem("Файл", null);
             editMenu = CreateToolStripItem("Редактирование", null);
             openItem = CreateToolStripItem("Открыть", LoadPhoto);
@@ -45,26 +46,21 @@ namespace MyPhotoshop
             imageArea = new PictureBox();
             Controls.Add(imageArea);
 
-            filtersSelect = new ComboBox();
-            filtersSelect.DropDownStyle = ComboBoxStyle.DropDownList;
+            filtersSelect = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
             filtersSelect.SelectedIndexChanged += FilterChanged;
             Controls.Add(filtersSelect);
 
-            apply = new Button();
-            apply.Text = "Применить";
-            apply.Enabled = false;
+            apply = new Button { Text = "Применить", Enabled = false };
             apply.Click += Process;
             Controls.Add(apply);
 
             Text = "Image Editor";
-
             LoadBitmap((Bitmap)Image.FromFile("raccoons.jpg"));
         }
 
         ToolStripMenuItem CreateToolStripItem(string text, EventHandler e)
         {
-            var item = new ToolStripMenuItem();
-            item.Text = text;
+            var item = new ToolStripMenuItem { Text = text };
             item.Click += e;
             return item;
         }
@@ -75,7 +71,7 @@ namespace MyPhotoshop
             menuStrip.Top = 0;
             menuStrip.Left = 0;
             imageArea.Image = originalBmp;
-            photoHistory.Do(Convertors.Bitmap2Photo(originalBmp));
+            photoHistory.Do(Convertors.BitmapToPhoto(originalBmp));
             imageArea.Left = 0;
             imageArea.Top = menuStrip.Bottom;
             imageArea.ClientSize = new Size(800, 600);
@@ -114,13 +110,13 @@ namespace MyPhotoshop
 
         void Undo(object sender, EventArgs e)
         {
-            imageArea.Image = Convertors.Photo2Bitmap(photoHistory.Undo());
+            imageArea.Image = Convertors.PhotoToBitmap(photoHistory.Undo());
             CheckStatusBtn();
         }
 
         void Redo(object sender, EventArgs e)
         {
-            imageArea.Image = Convertors.Photo2Bitmap(photoHistory.Redo());
+            imageArea.Image = Convertors.PhotoToBitmap(photoHistory.Redo());
             CheckStatusBtn();
         }
 
@@ -136,30 +132,36 @@ namespace MyPhotoshop
             if (filter == null) return;
             if (parametersPanel != null) Controls.Remove(parametersPanel);
             parametersControls = new List<TrackBar>();
-            parametersPanel = new Panel();
-            parametersPanel.Left = filtersSelect.Left;
-            parametersPanel.Top = filtersSelect.Bottom + 10;
-            parametersPanel.Width = filtersSelect.Width;
+            parametersPanel = new Panel
+            {
+                Left = filtersSelect.Left,
+                Top = filtersSelect.Bottom + 10,
+                Width = filtersSelect.Width
+            };
             parametersPanel.Height = ClientSize.Height - parametersPanel.Top;
             int y = 0;
 
             foreach (var param in filter.GetParameters())
             {
-                var label = new Label();
-                label.Left = 0;
-                label.Top = y;
-                label.Width = parametersPanel.Width;
-                label.Height = 40;
+                var label = new Label
+                {
+                    Left = 0,
+                    Top = y,
+                    Width = parametersPanel.Width,
+                    Height = 40
+                };
 
-                var box = new TrackBar();
-                box.Left = 0;
-                box.Top = label.Bottom;
-                box.Width = parametersPanel.Width;
-                box.Height = 20;
-                box.Value = (int)param.DefaultValue;
-                box.TickFrequency = 5;
-                box.Maximum = (int)param.MaxValue;
-                box.Minimum = (int)param.MinValue;
+                var box = new TrackBar
+                {
+                    Left = 0,
+                    Top = label.Bottom,
+                    Width = parametersPanel.Width,
+                    Height = 20,                   
+                    TickFrequency = 5,
+                    Maximum = (int)param.MaxValue,
+                    Minimum = (int)param.MinValue,
+                    Value = (int)param.DefaultValue
+                };
 
 
                 label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value);
@@ -174,24 +176,28 @@ namespace MyPhotoshop
 
         void LoadPhoto(object sender, EventArgs empty)
         {
-            OpenFileDialog OPF = new OpenFileDialog();
-            OPF.Filter = "Image Files |*.jpg;*.jpeg;*.png;*.gif";
-            OPF.Title = "Выберите изображение";
-            if (OPF.ShowDialog() == DialogResult.OK)
-                LoadBitmap((Bitmap)Image.FromFile(OPF.FileName));
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image Files |*.jpg;*.jpeg;*.png;*.gif",
+                Title = "Выберите изображение"
+            };
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+                LoadBitmap((Bitmap)Image.FromFile(openFileDialog.FileName));
         }
 
         private void SaveImage(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "JPeg Image|*.jpg|PNG Image|*.png|Gif Image|*.gif";
-            saveFileDialog1.Title = "Сохранить изображение как";
-            saveFileDialog1.ShowDialog();
-
-            if (saveFileDialog1.FileName != "")
+            SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                FileStream fs = (FileStream)saveFileDialog1.OpenFile();
-                switch (saveFileDialog1.FilterIndex)
+                Filter = "JPeg Image|*.jpg|PNG Image|*.png|Gif Image|*.gif",
+                Title = "Сохранить изображение как"
+            };
+            saveFileDialog.ShowDialog();
+
+            if (saveFileDialog.FileName != "")
+            {
+                FileStream fs = (FileStream)saveFileDialog.OpenFile();
+                switch (saveFileDialog.FilterIndex)
                 {
                     case 1:
                         imageArea.Image.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
@@ -213,11 +219,11 @@ namespace MyPhotoshop
             var data = parametersControls.Select(z => (double)z.Value).ToArray();
             var filter = (IFilter)filtersSelect.SelectedItem;
             Photo result = null;
-            var ph = Convertors.Bitmap2Photo((Bitmap)imageArea.Image);
+            var ph = Convertors.BitmapToPhoto((Bitmap)imageArea.Image);
             result = filter.Process(ph, data);
             photoHistory.Do(result);
             CheckStatusBtn();
-            var resultBmp = Convertors.Photo2Bitmap(result);
+            var resultBmp = Convertors.PhotoToBitmap(result);
             if (resultBmp.Width > originalBmp.Width || resultBmp.Height > originalBmp.Height)
             {
                 float k = Math.Min((float)originalBmp.Width / resultBmp.Width, (float)originalBmp.Height / resultBmp.Height);

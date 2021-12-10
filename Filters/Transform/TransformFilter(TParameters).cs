@@ -9,8 +9,8 @@ namespace MyPhotoshop
     public class TransformFilter<TParameters> : ParametrizedFilter<TParameters>
         where TParameters: new()
     {
-        ITransformer<TParameters> transformer;
-        string name;
+        readonly ITransformer<TParameters> transformer;
+        readonly string name;
         public TransformFilter(string name, ITransformer<TParameters> transformer)
         {
             this.name = name;
@@ -19,7 +19,7 @@ namespace MyPhotoshop
 
         public override Photo Process(Photo photo, TParameters parameters)
         {
-            var oldSize = new Size(photo.width, photo.height);
+            var oldSize = new Size(photo.Width, photo.Height);
             transformer.Prepare(oldSize, parameters);
             var result = new Photo(transformer.ResultSize.Width, transformer.ResultSize.Height);
             for (int x = 0; x < result.Width; x++)

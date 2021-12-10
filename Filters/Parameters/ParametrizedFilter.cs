@@ -8,7 +8,7 @@ namespace MyPhotoshop
     public abstract class ParametrizedFilter<TParameters> : IFilter
         where TParameters : new()
     {
-        IParametersHandler<TParameters> handler = new ParametersHandler<TParameters>();
+        readonly ParametersHandler<TParameters> handler = new ParametersHandler<TParameters>();
         public ParameterInfo[] GetParameters() => handler.GetDescription();
 
         public Photo Process(Photo photo, double[] values)
@@ -18,6 +18,5 @@ namespace MyPhotoshop
         }
 
         public abstract Photo Process(Photo photo, TParameters parameters);
-
     }
 }

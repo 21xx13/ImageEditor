@@ -5,8 +5,8 @@ namespace MyPhotoshop
     public class PixelFilter<TParameters> : ParametrizedFilter<TParameters>
         where TParameters : new()
     {
-        string name;
-        Func<Pixel, TParameters, Pixel> processor;
+        readonly string name;
+        readonly Func<Pixel, TParameters, Pixel> processor;
 
         public PixelFilter(string name, Func<Pixel, TParameters, Pixel> processor)
         {
@@ -15,10 +15,10 @@ namespace MyPhotoshop
         }
         public override Photo Process(Photo original, TParameters parameters)
         {
-            var result = new Photo(original.width, original.height);
+            var result = new Photo(original.Width, original.Height);
 
-            for (int x = 0; x < result.width; x++)
-                for (int y = 0; y < result.height; y++)
+            for (int x = 0; x < result.Width; x++)
+                for (int y = 0; y < result.Height; y++)
                 {
                     result[x, y] = processor(original[x, y], parameters); ;
                 }

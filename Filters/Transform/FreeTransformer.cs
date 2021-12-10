@@ -8,8 +8,8 @@ namespace MyPhotoshop
 {
     public class FreeTransformer : ITransformer<EmptyParameters>
     {
-        Func<Size, Size> sizeTransformer;
-        Func<Point, Size, Point> pointTransformer;
+        readonly Func<Size, Size> sizeTransformer;
+        readonly Func<Point, Size, Point> pointTransformer;
         Size oldSize;
         public Size ResultSize { get; private set; }
 
