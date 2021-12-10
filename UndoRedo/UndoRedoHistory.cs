@@ -35,7 +35,7 @@ namespace MyPhotoshop
         {
             if (inUndoRedo)
                 throw new InvalidOperationException(
-                    "Involking do within an undo/redo action.");
+                    "Выполняется действие отмены/возврата.");
             redoStack.Clear();
             undoStack.Push(m);
         }
