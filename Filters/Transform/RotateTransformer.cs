@@ -24,6 +24,8 @@ namespace MyPhotoshop
             return new Point(x, y);
         }
 
+       
+
         public void Prepare(Size size, RotationParameters parameters)
         {
             OriginalSize = size;

@@ -23,12 +23,51 @@ namespace MyPhotoshop
         ToolStripMenuItem undoItem;
         ToolStripMenuItem redoItem;
         ToolStripMenuItem originalItem;
-        Panel paintPanel;
-        Label brushLabel;
-        TrackBar brushSize;
-        Button changeColorBtn;
-        List<Color> colorList;
+        //Panel paintPanel;
+        //Label brushLabel;
+        //TrackBar brushSize;
+        //Button changeColorBtn;
+        //List<Color> colorList;
+        //bool isMouse = false;
         UndoRedoHistory<Photo> photoHistory;
+        //class ArrayPoints
+        //{
+        //    private int index = 0;
+        //    private Point[] points;
+        //    public ArrayPoints(int size)
+        //    {
+        //        points = new Point[size];
+        //    }
+
+        //    public void SetPoint(int x, int y)
+        //    {
+        //        if (index >= points.Length)
+        //        {
+        //            index = 0;
+        //        }
+        //        points[index] = new Point(x, y);
+        //        index++;
+        //    }
+
+        //    public void ResetPoints()
+        //    {
+        //        index = 0;
+        //    }
+
+        //    public int GetCountPoints()
+        //    {
+        //        return index;
+        //    }
+
+        //    public Point[] GetPoints()
+        //    {
+        //        return points;
+        //    }
+        //}
+        //private ArrayPoints arrayPoints = new ArrayPoints(2);
+        //Graphics graphics;
+        //Pen pen = new Pen(Color.Black, 3f);
+        //Bitmap map;
 
         public MainWindow()
         {
@@ -37,31 +76,28 @@ namespace MyPhotoshop
             menuStrip.Top = 0;
             menuStrip.Left = 0;
             LoadBitmap((Bitmap)Image.FromFile("raccoons.jpg"));
-            paintPanel.Top = menuStrip.Bottom + 10;
-            paintPanel.Left = imageArea.Right + 10;
-            paintPanel.Size = new Size(200, 160);
-
+            //paintPanel.Top = menuStrip.Bottom + 10;
+            //paintPanel.Left = imageArea.Right + 10;
+            //paintPanel.Size = new Size(200, 160);
             filtersSelect.Left = imageArea.Right + 10;
-            filtersSelect.Top = paintPanel.Bottom + 10;
-            filtersSelect.Width = paintPanel.Width;
+            filtersSelect.Top = menuStrip.Bottom + 10;
+            filtersSelect.Width = 200;
             filtersSelect.Height = 20;
-
-            brushSize.Width = paintPanel.Width;
+            //brushSize.Width = paintPanel.Width;
 
             ClientSize = new Size(filtersSelect.Right + 20, imageArea.Bottom);
-
+            //map = new Bitmap(imageArea.Image);
             apply.Left = ClientSize.Width - 120;
             apply.Top = ClientSize.Height - 50;
             apply.Width = 100;
             apply.Height = 40;
+           // SetSize();
+           // imageArea.MouseDown += (sender, e) => { isMouse = true; photoHistory.Do(Convertors.BitmapToPhoto((Bitmap)imageArea.Image)); CheckStatusBtn(); };
+            //imageArea.MouseUp += (sender, e) => { isMouse = false; arrayPoints.ResetPoints(); };
+            //imageArea.MouseMove += MouseMovePaint;
         }
 
-        ToolStripMenuItem CreateToolStripItem(string text, EventHandler e)
-        {
-            var item = new ToolStripMenuItem { Text = text };
-            item.Click += e;
-            return item;
-        }
+        
 
         public void AddFilter(IFilter filter)
         {
@@ -75,7 +111,10 @@ namespace MyPhotoshop
 
         void ReturnOriginal(object sender, EventArgs e)
         {
+            //graphics.Clear(Color.Transparent);
+            //graphics = Graphics.FromImage((Bitmap)imageArea.Image);
             imageArea.Image = originalBmp;
+            
         }
 
         void Undo(object sender, EventArgs e)
@@ -134,7 +173,7 @@ namespace MyPhotoshop
                 };
 
                 label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value);
-                box.Scroll += (a, b) => { label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value); };
+                box.Scroll += (s, ev) => { label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value); };
                 parametersPanel.Controls.Add(label);
                 parametersPanel.Controls.Add(box);
                 y += label.Height + 65;
@@ -193,15 +232,7 @@ namespace MyPhotoshop
             photoHistory.Do(result);
             CheckStatusBtn();
             var resultBmp = Convertors.PhotoToBitmap(result);
-            if (resultBmp.Width > originalBmp.Width || resultBmp.Height > originalBmp.Height)
-            {
-                float k = Math.Min((float)originalBmp.Width / resultBmp.Width, (float)originalBmp.Height / resultBmp.Height);
-                var newBmp = new Bitmap((int)(resultBmp.Width * k), (int)(resultBmp.Height * k));
-                using (var g = Graphics.FromImage(newBmp))
-                    g.DrawImage(resultBmp, new Rectangle(0, 0, newBmp.Width, newBmp.Height), new Rectangle(0, 0, resultBmp.Width, resultBmp.Height), GraphicsUnit.Pixel);
-
-                resultBmp = newBmp;
-            }
+            
             imageArea.Image = resultBmp;
         }
 
@@ -218,47 +249,55 @@ namespace MyPhotoshop
             FilterChanged(null, EventArgs.Empty);
         }
 
-        void CreateColorBtn()
+        //void CreateColorBtn()
+        //{
+        //    var x = 0;
+        //    int y = 0;
+        //    int size = 27;
+        //    int lenLine = 6;
+        //    for (int i = 0; i < colorList.Count; i++)
+        //    {
+        //        x = i % lenLine * (size + 5);
+        //        y = i / lenLine * (size + 5);
+        //        var btn = new Button();
+        //        paintPanel.Controls.Add(btn);
+        //        btn.BackColor = colorList[i];
+        //        btn.FlatStyle = FlatStyle.Flat;
+        //        btn.Location = new Point(x, y);
+        //        btn.Size = new Size(size, size);
+        //        btn.UseVisualStyleBackColor = false;
+        //        btn.Click += СhangeColor;
+        //    }
+        //}
+
+        ToolStripMenuItem CreateToolStripItem(string text, EventHandler e)
         {
-            var x = 0;
-            int y = 0;
-            int size = 27;
-            for (int i = 0; i < colorList.Count; i++)
-            {
-                x = i % 6 * (size + 5);
-                y = i / 6 * (size + 5);
-                var btn = new Button();
-                paintPanel.Controls.Add(btn);
-                btn.BackColor = colorList[i];
-                btn.FlatStyle = FlatStyle.Flat;
-                btn.Location = new Point(x, y);
-                btn.Size = new Size(size, size);
-                btn.UseVisualStyleBackColor = false;
-                btn.Click += СhangeColor;
-            }
+            var item = new ToolStripMenuItem { Text = text };
+            item.Click += e;
+            return item;
         }
 
         private void InitializeComponent()
         {
-            colorList = new List<Color>() {Color.White, Color.Gray, Color.Black, Color.Red, Color.Orange, Color.Yellow,
-                Color.Lime, Color.Green, Color.Turquoise, Color.Blue, Color.Fuchsia};
+            //colorList = new List<Color>() {Color.White, Color.Gray, Color.Black, Color.Red, Color.Orange, Color.Yellow,
+            //    Color.Lime, Color.Green, Color.Turquoise, Color.Blue, Color.Fuchsia};
             menuStrip = new MenuStrip();
             photoHistory = new UndoRedoHistory<Photo>();
             CreateMainMenu();
 
-            paintPanel = new Panel();
-            brushLabel = new Label { Top = 90, Width = 200 };
-            brushSize = new TrackBar { Top = brushLabel.Bottom + 5, Maximum = 30, Minimum = 1 };
-            brushLabel.Text = String.Format("Толщина кисти: {0}", brushSize.Value);
-            brushSize.Scroll += (a, b) => { brushLabel.Text = String.Format("Толщина кисти: {0}", brushSize.Value); };
-            CreateColorBtn();
-            changeColorBtn = new Button
-            {
-                BackColor = Color.White,
-                Location = new Point(160, 32),
-                Size = new Size(27, 27),
-                UseVisualStyleBackColor = false
-            };
+            //paintPanel = new Panel();
+            //brushLabel = new Label { Top = 90, Width = 200 };
+            //brushSize = new TrackBar { Top = brushLabel.Bottom + 5, Maximum = 30, Minimum = 0, TickFrequency = 2, Value = 1 };
+            //brushLabel.Text = String.Format("Толщина кисти: {0}", brushSize.Value);
+            //brushSize.Scroll += (s, e) => { brushLabel.Text = String.Format("Толщина кисти: {0}", brushSize.Value); };
+            //CreateColorBtn();
+            //changeColorBtn = new Button
+            //{
+            //    BackColor = Color.White,
+            //    Location = new Point(160, 32),
+            //    Size = new Size(27, 27),
+            //    UseVisualStyleBackColor = false
+            //};
 
             imageArea = new PictureBox();
 
@@ -269,12 +308,12 @@ namespace MyPhotoshop
 
             Controls.Add(menuStrip);
             Controls.Add(imageArea);
-            Controls.Add(paintPanel);
+            //Controls.Add(paintPanel);
             Controls.Add(apply);
             Controls.Add(filtersSelect);
-            paintPanel.Controls.Add(brushLabel);
-            paintPanel.Controls.Add(brushSize);
-            paintPanel.Controls.Add(changeColorBtn);
+            //paintPanel.Controls.Add(brushLabel);
+            //paintPanel.Controls.Add(brushSize);
+            //paintPanel.Controls.Add(changeColorBtn);
             Text = "Image Editor";
         }
 
@@ -294,9 +333,31 @@ namespace MyPhotoshop
             redoItem.ShortcutKeys = Keys.Control | Keys.Y;
         }
 
-        private void СhangeColor(object sender, EventArgs e)
-        {
+        //private void СhangeColor(object sender, EventArgs e)
+        //{
 
-        }
+        //}
+
+        //private void MouseMovePaint(object sender, MouseEventArgs e)
+        //{
+            
+        //    if (!isMouse) return;
+        //    arrayPoints.SetPoint(e.X, e.Y);
+        //    if (arrayPoints.GetCountPoints() >= 2) {
+              
+        //        graphics.DrawLines(pen, arrayPoints.GetPoints());
+                
+        //        imageArea.Image = map;
+                
+        //        arrayPoints.SetPoint(e.X, e.Y);
+        //    }                
+        //}
+
+        //void SetSize() {
+
+        //    graphics = Graphics.FromImage((Bitmap)map);
+        //    pen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+        //    pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+        //}
     }
 }

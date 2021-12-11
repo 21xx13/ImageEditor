@@ -51,6 +51,8 @@
     <Compile Include="Filters\Transform\ITransformer.cs" />
     <Compile Include="Filters\Transform\RotateTransformer.cs" />
     <Compile Include="Filters\Transform\RotationParameters.cs" />
+    <Compile Include="Filters\Transform\ScaleParameters.cs" />
+    <Compile Include="Filters\Transform\ScaleTransform.cs" />
     <Compile Include="Filters\Transform\TransformFilter.cs" />
     <Compile Include="Filters\Transform\TransformFilter%28TParameters%29.cs" />
     <Compile Include="Main.cs" />

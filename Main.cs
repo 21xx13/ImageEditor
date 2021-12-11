@@ -57,6 +57,10 @@ namespace MyPhotoshop
 
             window.AddFilter(new TransformFilter<RotationParameters>("Свободное вращение",
                 new RotateTransformer()));
+            window.AddFilter(new TransformFilter<ScaleParameters>("Увеличить",
+                new ScaleTransformer(true)));
+            window.AddFilter(new TransformFilter<ScaleParameters>("Уменьшить",
+               new ScaleTransformer(false)));
             Application.Run(window);
         }
     }
