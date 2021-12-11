@@ -20,11 +20,17 @@ namespace MyPhotoshop
         {
             if (value < 0)
                 return 0;
-            if (value > 255) 
+            if (value > 255)
                 return 255;
             return value;
         }
-
+        public static Pixel Trim(Pixel pixel)
+        {
+            pixel.R = Trim(pixel.R);
+            pixel.G = Trim(pixel.G);
+            pixel.B = Trim(pixel.B);
+            return pixel;
+        }
         private double Check(double value)
         {
             if (value < 0 && value > 255) throw new ArgumentException("Значение не может быть меньше 0 или больше 255");
@@ -57,7 +63,7 @@ namespace MyPhotoshop
 
         public static Pixel operator *(Pixel p, double numb)
         {
-            return new Pixel(Trim(p.R * numb), Trim(p.G * numb), Trim(p.B * numb));
+            return new Pixel(p.R * numb, p.G * numb, p.B * numb);
         }
 
         public static Pixel operator *(double numb, Pixel p)
@@ -67,7 +73,22 @@ namespace MyPhotoshop
 
         public static Pixel operator +(Pixel p, double numb)
         {
-            return new Pixel(Trim(p.R + numb), Trim(p.G + numb), Trim(p.B + numb));
+            return new Pixel(p.R + numb, p.G + numb, p.B + numb);
+        }
+
+        public static Pixel operator -(Pixel p, double numb)
+        {
+            return new Pixel(p.R - numb, p.G - numb, p.B - numb);
+        }
+
+        public static Pixel operator -(double numb, Pixel p)
+        {
+            return new Pixel(numb - p.R, numb - p.G, numb - p.B);
+        }
+
+        public static Pixel operator /(Pixel p, double numb)
+        {
+            return new Pixel(p.R / numb, p.G / numb, p.B / numb);
         }
 
         public static Pixel operator +(double numb, Pixel p)

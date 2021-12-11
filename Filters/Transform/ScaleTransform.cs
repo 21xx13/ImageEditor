@@ -20,20 +20,20 @@ namespace MyPhotoshop
 
         public Point? MapPoint(Point point)
         {
-            var x = (int)(point.X / ScaleX);
-            var y = (int)(point.Y / ScaleY);
+            var x = (int)(point.X / (ScaleX == 0 ? 1 : ScaleX));
+            var y = (int)(point.Y / (ScaleY == 0 ? 1 : ScaleY));
             return new Point(x, y);
         }
-
 
         public void Prepare(Size size, ScaleParameters parameters)
         {
             OriginalSize = size;
             int factor = -1;
             if (IsIncrease) factor = 1;
-            ScaleX = 1 + factor * parameters.ScaleX / 100;
-            ScaleY = 1 + factor * parameters.ScaleY / 100;
-            ResultSize = new Size((int)(size.Width * ScaleX), (int)(size.Height * ScaleY));
+            ScaleX = 1 + factor * (parameters.ScaleX / 100);
+            ScaleY = 1 + factor * (parameters.ScaleY / 100);
+            ResultSize = new Size((int)(size.Width * ScaleX) == 0 ? 1 : (int)(size.Width * ScaleX),
+                (int)(size.Height * ScaleY) == 0 ? 1 : (int)(size.Height * ScaleY));
         }
     }
 }

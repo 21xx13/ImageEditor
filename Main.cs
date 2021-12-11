@@ -23,38 +23,30 @@ namespace MyPhotoshop
             window.AddFilter(new PixelFilter<ContrastParameters>("Контрастность",
                 (pixel, parameters) =>
                 {
-                    var r = Pixel.Trim((pixel.R * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient));
-                    var g = Pixel.Trim((pixel.G * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient));
-                    var b = Pixel.Trim((pixel.B * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient));
-                    return new Pixel(r, g, b);
+                    return Pixel.Trim((pixel * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient));
                 }));
             window.AddFilter(new PixelFilter<EmptyParameters>("Оттенки серого",
                 (pixel, parameters) =>
                 {
                     var brightness = (0.299 * (pixel.R)) + 0.587 * (pixel.G) + 0.114 * (pixel.B);
-                    return new Pixel(brightness, brightness, brightness);
+                    return Pixel.Trim(new Pixel(brightness, brightness, brightness));
                 }));
             window.AddFilter(new PixelFilter<EmptyParameters>("Сепия",
                 (pixel, parameters) =>
                 {
-                    var r = Pixel.Trim((0.393 * (pixel.R)) + 0.769 * (pixel.G) + 0.189 * (pixel.B));
-                    var g = Pixel.Trim((0.349 * (pixel.R)) + 0.686 * (pixel.G) + 0.168 * (pixel.B));
-                    var b = Pixel.Trim((0.272 * (pixel.R)) + 0.534 * (pixel.G) + 0.131 * (pixel.B));
-                    return new Pixel(r, g, b);
+                    return Pixel.Trim(new Pixel(
+                        (0.393 * (pixel.R)) + 0.769 * (pixel.G) + 0.189 * (pixel.B), 
+                        (0.349 * (pixel.R)) + 0.686 * (pixel.G) + 0.168 * (pixel.B), 
+                        (0.272 * (pixel.R)) + 0.534 * (pixel.G) + 0.131 * (pixel.B)
+                        ));
                 }));
             window.AddFilter(new PixelFilter<EmptyParameters>("Негатив",
-                (pixel, parameters) =>
-                {
-                    return new Pixel(255 - pixel.R, 255 - pixel.G, 255 - pixel.B);
-                }));
-
+                (pixel, parameters) => Pixel.Trim(255 - pixel)));
             window.AddFilter(new TransformFilter("Отразить по горизонтали", size => size,
                 (point, size) => new Point(size.Width - point.X - 1, point.Y)
                 ));
             window.AddFilter(new TransformFilter("Повернуть по ч.с.", size => new Size(size.Height, size.Width),
                 (point, size) => new Point(point.Y, point.X)));
-
-
             window.AddFilter(new TransformFilter<RotationParameters>("Свободное вращение",
                 new RotateTransformer()));
             window.AddFilter(new TransformFilter<ScaleParameters>("Увеличить",
