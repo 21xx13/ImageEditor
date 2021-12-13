@@ -11,7 +11,7 @@ namespace MyPhotoshop
         {
             var window = new MainWindow();
             window.AddFilter(new PixelFilter<LighteningParameters>("Осветление/затемнение",
-                (pixel, parameters) => pixel * (parameters.Coefficient/50)));
+                (pixel, parameters) => Pixel.Trim(pixel * (parameters.Coefficient/50))));
             window.AddFilter(new PixelFilter<ColorParameters>("Цветовой баланс",
                 (pixel, parameters) =>
                 {
@@ -49,10 +49,8 @@ namespace MyPhotoshop
                 (point, size) => new Point(point.Y, point.X)));
             window.AddFilter(new TransformFilter<RotationParameters>("Свободное вращение",
                 new RotateTransformer()));
-            window.AddFilter(new TransformFilter<ScaleParameters>("Увеличить",
-                new ScaleTransformer(true)));
-            window.AddFilter(new TransformFilter<ScaleParameters>("Уменьшить",
-               new ScaleTransformer(false)));
+            window.AddFilter(new TransformFilter<ScaleParameters>("Увеличить/уменьшить",
+                new ScaleTransformer()));
             Application.Run(window);
         }
     }

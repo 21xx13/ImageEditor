@@ -24,8 +24,7 @@ namespace MyPhotoshop
         ToolStripMenuItem redoItem;
         ToolStripMenuItem originalItem;
         UndoRedoHistory<Photo> photoHistory;
-
-
+        Label imageSize;
         public MainWindow()
         {
             InitializeComponent();
@@ -39,10 +38,13 @@ namespace MyPhotoshop
             filtersSelect.Height = 20;
 
             ClientSize = new Size(filtersSelect.Right + 20, imageArea.Bottom);
-            apply.Left = ClientSize.Width - 120;
+            apply.Left = ClientSize.Width - 100;
             apply.Top = ClientSize.Height - 50;
-            apply.Width = 100;
+            apply.Width = 80;
             apply.Height = 40;
+
+            imageSize.Left = imageArea.Right + 10;
+            imageSize.Top = ClientSize.Height - 45;
         }
 
         
@@ -59,19 +61,18 @@ namespace MyPhotoshop
 
         void ReturnOriginal(object sender, EventArgs e)
         {
-            imageArea.Image = originalBmp;            
+            photoHistory.Do(Convertors.BitmapToPhoto(originalBmp));
+            ChangeImage(originalBmp);
         }
 
         void Undo(object sender, EventArgs e)
         {
-            imageArea.Image = Convertors.PhotoToBitmap(photoHistory.Undo());
-            CheckStatusBtn();
+            ChangeImage(Convertors.PhotoToBitmap(photoHistory.Undo()));
         }
 
         void Redo(object sender, EventArgs e)
         {
-            imageArea.Image = Convertors.PhotoToBitmap(photoHistory.Redo());
-            CheckStatusBtn();
+            ChangeImage(Convertors.PhotoToBitmap(photoHistory.Redo()));
         }
 
         void CheckStatusBtn()
@@ -111,11 +112,11 @@ namespace MyPhotoshop
                     Top = label.Bottom,
                     Width = parametersPanel.Width,
                     Height = 20,
-                    TickFrequency = 5,
                     Maximum = (int)param.MaxValue,
                     Minimum = (int)param.MinValue,
                     Value = (int)param.DefaultValue
                 };
+                box.TickFrequency = (box.Maximum - box.Minimum) / 20;
 
                 label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value);
                 box.Scroll += (s, ev) => { label.Text = String.Format("{0}\nТекущее значение: {1}", param.Name, box.Value); };
@@ -174,22 +175,26 @@ namespace MyPhotoshop
             Photo result = null;
             var ph = Convertors.BitmapToPhoto((Bitmap)imageArea.Image);
             result = filter.Process(ph, data);
-            photoHistory.Do(result);
+            photoHistory.Do(result);           
+            ChangeImage(Convertors.PhotoToBitmap(result));
+        }
+
+        void ChangeImage(Bitmap newImage) {
+            
             CheckStatusBtn();
-            var resultBmp = Convertors.PhotoToBitmap(result);            
-            imageArea.Image = resultBmp;
+            imageSize.Text = String.Format("Размер картинки:\n{0}x{1}", newImage.Width, newImage.Height);
+            imageArea.Image = newImage;
         }
 
         public void LoadBitmap(Bitmap bmp)
         {
-            originalBmp = bmp;
-            imageArea.Image = originalBmp;
+            originalBmp = bmp;            
             photoHistory.Do(Convertors.BitmapToPhoto(originalBmp));
             imageArea.Left = 0;
             imageArea.Top = menuStrip.Bottom;
             imageArea.ClientSize = new Size(800, 600);
             imageArea.SizeMode = PictureBoxSizeMode.Zoom;
-            CheckStatusBtn();
+            ChangeImage(originalBmp);
             FilterChanged(null, EventArgs.Empty);
         }
   
@@ -206,7 +211,7 @@ namespace MyPhotoshop
             menuStrip = new MenuStrip();
             photoHistory = new UndoRedoHistory<Photo>();
             CreateMainMenu();
-
+            imageSize = new Label();
             imageArea = new PictureBox();
 
             filtersSelect = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
@@ -217,7 +222,8 @@ namespace MyPhotoshop
             Controls.Add(menuStrip);
             Controls.Add(imageArea);          
             Controls.Add(apply);
-            Controls.Add(filtersSelect);           
+            Controls.Add(filtersSelect);
+            Controls.Add(imageSize);
             Text = "Image Editor";
         }
 

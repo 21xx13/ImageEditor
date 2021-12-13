@@ -12,5 +12,6 @@ namespace MyPhotoshop
         public double MinValue = 0;
         public double MaxValue = 1;
         public double Increment;
+        public bool IsNumeric = false;
     }
 }

@@ -12,11 +12,6 @@ namespace MyPhotoshop
         public Size ResultSize { get; private set; }
         public double ScaleX { get; private set; }
         public double ScaleY { get; private set; }
-        public readonly bool IsIncrease;
-        public ScaleTransformer(bool isIncrease)
-        {
-            IsIncrease = isIncrease;
-        }
 
         public Point? MapPoint(Point point)
         {
@@ -27,13 +22,10 @@ namespace MyPhotoshop
 
         public void Prepare(Size size, ScaleParameters parameters)
         {
-            OriginalSize = size;
-            int factor = -1;
-            if (IsIncrease) factor = 1;
-            ScaleX = 1 + factor * (parameters.ScaleX / 100);
-            ScaleY = 1 + factor * (parameters.ScaleY / 100);
-            ResultSize = new Size((int)(size.Width * ScaleX) == 0 ? 1 : (int)(size.Width * ScaleX),
-                (int)(size.Height * ScaleY) == 0 ? 1 : (int)(size.Height * ScaleY));
+            OriginalSize = size;           
+            ScaleX = Math.Abs((parameters.ScaleX / size.Width)) ;
+            ScaleY = Math.Abs((parameters.ScaleY / size.Height)) ;
+            ResultSize = new Size((int)parameters.ScaleX, (int)parameters.ScaleY);
         }
     }
 }
