@@ -38,6 +38,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\ImageFormats.cs" />
     <Compile Include="Data\Pixel.cs" />
     <Compile Include="Filters\ColorParameters.cs" />
     <Compile Include="Filters\ContrastParameters.cs" />

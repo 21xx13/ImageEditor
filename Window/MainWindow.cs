@@ -47,7 +47,7 @@ namespace MyPhotoshop
             imageSize.Top = ClientSize.Height - 45;
         }
 
-        
+
 
         public void AddFilter(IFilter filter)
         {
@@ -132,7 +132,7 @@ namespace MyPhotoshop
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Image Files |*.jpg;*.jpeg;*.png;*.gif",
+                Filter = ImageFormats.LoadFilter,
                 Title = "Выберите изображение"
             };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -143,7 +143,7 @@ namespace MyPhotoshop
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = "JPeg Image|*.jpg|PNG Image|*.png|Gif Image|*.gif",
+                Filter = ImageFormats.SaveFilter,
                 Title = "Сохранить изображение как"
             };
             saveFileDialog.ShowDialog();
@@ -151,17 +151,14 @@ namespace MyPhotoshop
             if (saveFileDialog.FileName != "")
             {
                 FileStream fs = (FileStream)saveFileDialog.OpenFile();
-                switch (saveFileDialog.FilterIndex)
+
+                for (int i = 1; i <= ImageFormats.Formats.Count; i++)
                 {
-                    case 1:
-                        imageArea.Image.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    if (saveFileDialog.FilterIndex == i)
+                    {
+                        imageArea.Image.Save(fs, ImageFormats.Formats[i - 1]);
                         break;
-                    case 2:
-                        imageArea.Image.Save(fs, System.Drawing.Imaging.ImageFormat.Png);
-                        break;
-                    case 3:
-                        imageArea.Image.Save(fs, System.Drawing.Imaging.ImageFormat.Gif);
-                        break;
+                    }
                 }
                 fs.Close();
             }
@@ -175,12 +172,13 @@ namespace MyPhotoshop
             Photo result = null;
             var ph = Convertors.BitmapToPhoto((Bitmap)imageArea.Image);
             result = filter.Process(ph, data);
-            photoHistory.Do(result);           
+            photoHistory.Do(result);
             ChangeImage(Convertors.PhotoToBitmap(result));
         }
 
-        void ChangeImage(Bitmap newImage) {
-            
+        void ChangeImage(Bitmap newImage)
+        {
+
             CheckStatusBtn();
             imageSize.Text = String.Format("Размер картинки:\n{0}x{1}", newImage.Width, newImage.Height);
             imageArea.Image = newImage;
@@ -188,7 +186,7 @@ namespace MyPhotoshop
 
         public void LoadBitmap(Bitmap bmp)
         {
-            originalBmp = bmp;            
+            originalBmp = bmp;
             photoHistory.Do(Convertors.BitmapToPhoto(originalBmp));
             imageArea.Left = 0;
             imageArea.Top = menuStrip.Bottom;
@@ -197,7 +195,7 @@ namespace MyPhotoshop
             ChangeImage(originalBmp);
             FilterChanged(null, EventArgs.Empty);
         }
-  
+
 
         ToolStripMenuItem CreateToolStripItem(string text, EventHandler e)
         {
@@ -207,7 +205,7 @@ namespace MyPhotoshop
         }
 
         private void InitializeComponent()
-        {          
+        {
             menuStrip = new MenuStrip();
             photoHistory = new UndoRedoHistory<Photo>();
             CreateMainMenu();
@@ -220,7 +218,7 @@ namespace MyPhotoshop
             apply.Click += Process;
 
             Controls.Add(menuStrip);
-            Controls.Add(imageArea);          
+            Controls.Add(imageArea);
             Controls.Add(apply);
             Controls.Add(filtersSelect);
             Controls.Add(imageSize);
