@@ -23,8 +23,8 @@ namespace MyPhotoshop
         public void Prepare(Size size, ScaleParameters parameters)
         {
             OriginalSize = size;           
-            ScaleX = Math.Abs((parameters.ScaleX / size.Width)) ;
-            ScaleY = Math.Abs((parameters.ScaleY / size.Height)) ;
+            ScaleX = Math.Abs(parameters.ScaleX / size.Width) ;
+            ScaleY = Math.Abs(parameters.ScaleY / size.Height) ;
             ResultSize = new Size((int)parameters.ScaleX, (int)parameters.ScaleY);
         }
     }

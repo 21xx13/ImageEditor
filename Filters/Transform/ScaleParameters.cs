@@ -7,11 +7,9 @@ namespace MyPhotoshop
 {
     public class ScaleParameters
     {
-        [ParameterInfo(Name = "Ширина (в процентах)", MaxValue = 2000, MinValue = 1, Increment = 1, DefaultValue = 500,
-            IsNumeric = true)]
+        [ParameterInfo(Name = "Ширина (в процентах)", MaxValue = 2000, MinValue = 1, Increment = 1, DefaultValue = 500)]
         public double ScaleX { get; set; }
-        [ParameterInfo(Name = "Высота (в процентах)", MaxValue = 2000, MinValue = 1, Increment = 1, DefaultValue = 500,
-            IsNumeric = true)]
+        [ParameterInfo(Name = "Высота (в процентах)", MaxValue = 2000, MinValue = 1, Increment = 1, DefaultValue = 500)]
         public double ScaleY { get; set; }
     }
 }

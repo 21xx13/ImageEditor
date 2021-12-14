@@ -23,12 +23,14 @@ namespace MyPhotoshop
         ToolStripMenuItem undoItem;
         ToolStripMenuItem redoItem;
         ToolStripMenuItem originalItem;
+        ToolStripMenuItem cropItem;
         UndoRedoHistory<Photo> photoHistory;
         Label imageSize;
+        int crpX, crpY, rectW, rectH;
+        readonly Pen crpPen = new Pen(Color.White);
         public MainWindow()
         {
             InitializeComponent();
-
             menuStrip.Top = 0;
             menuStrip.Left = 0;
             LoadBitmap((Bitmap)Image.FromFile("raccoons.jpg"));
@@ -47,7 +49,83 @@ namespace MyPhotoshop
             imageSize.Top = ClientSize.Height - 45;
         }
 
+        private void CropMouseEnter(object sender, EventArgs e)
+        {
+            Cursor = Cursors.Cross;
+        }
 
+        private void CropToggle(object sender, EventArgs e)
+        {
+            if (cropItem.Checked)
+            {
+                imageArea.MouseDown -= (CropMouseDown);
+                imageArea.MouseMove -= (CropMouseMove);
+                imageArea.MouseEnter -= (CropMouseEnter);
+
+            }
+            else
+            {
+                imageArea.MouseDown += (CropMouseDown);
+                imageArea.MouseMove += (CropMouseMove);
+                imageArea.MouseEnter += (CropMouseEnter);
+            }
+            Cursor = Cursors.Default;
+            imageArea.Refresh();
+            cropItem.Checked = !cropItem.Checked;
+        }
+
+        private void CropMouseMove(object sender, MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (e.Button == MouseButtons.Left)
+            {
+                imageArea.Refresh();
+                rectW = e.X - crpX;
+                rectH = e.Y - crpY;
+                Graphics g = imageArea.CreateGraphics();
+                g.DrawRectangle(crpPen, crpX, crpY, rectW, rectH);
+                g.Dispose();
+            }
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            Cursor = Cursors.Default;
+        }
+
+        private void CropMouseDown(object sender, MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (e.Button == MouseButtons.Left)
+            {
+                crpPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                crpX = e.X;
+                crpY = e.Y;
+            }
+        }
+
+        private void CropProcess(object sender, EventArgs e)
+        {
+            photoHistory.Do(Convertors.BitmapToPhoto((Bitmap)imageArea.Image));
+            Bitmap bmp2 = new Bitmap(imageArea.Width, imageArea.Height);
+            imageArea.DrawToBitmap(bmp2, imageArea.ClientRectangle);
+            if (rectW + crpX > imageArea.Width)
+                rectW = imageArea.Width - crpX;
+            if (rectH + crpY > imageArea.Height)
+                rectH = imageArea.Height - crpY;
+            Bitmap crpImg = new Bitmap(rectW, rectH);
+
+            for (int i = 0; i < rectW; i++)
+            {
+                for (int y = 0; y < rectH; y++)
+                {
+                    Color pxlclr = bmp2.GetPixel(crpX + i, crpY + y);
+                    crpImg.SetPixel(i, y, pxlclr);
+                }
+            }
+            ChangeImage(crpImg);
+        }        
 
         public void AddFilter(IFilter filter)
         {
@@ -167,6 +245,12 @@ namespace MyPhotoshop
 
         void Process(object sender, EventArgs empty)
         {
+            if (cropItem.Checked)
+            {
+                CropToggle(sender, empty);
+                CropProcess(sender, empty);
+                return;
+            }
             var data = parametersControls.Select(z => (double)z.Value).ToArray();
             var filter = (IFilter)filtersSelect.SelectedItem;
             Photo result = null;
@@ -178,7 +262,6 @@ namespace MyPhotoshop
 
         void ChangeImage(Bitmap newImage)
         {
-
             CheckStatusBtn();
             imageSize.Text = String.Format("Размер картинки:\n{0}x{1}", newImage.Width, newImage.Height);
             imageArea.Image = newImage;
@@ -195,7 +278,6 @@ namespace MyPhotoshop
             ChangeImage(originalBmp);
             FilterChanged(null, EventArgs.Empty);
         }
-
 
         ToolStripMenuItem CreateToolStripItem(string text, EventHandler e)
         {
@@ -234,9 +316,10 @@ namespace MyPhotoshop
             undoItem = CreateToolStripItem("Шаг назад", Undo);
             redoItem = CreateToolStripItem("Шаг вперед", Redo);
             originalItem = CreateToolStripItem("Исходное изображение", ReturnOriginal);
+            cropItem = CreateToolStripItem("Кадрировать", CropToggle);
             menuStrip.Items.AddRange(new ToolStripItem[] { fileMenu, editMenu });
             fileMenu.DropDownItems.AddRange(new ToolStripItem[] { openItem, saveItem });
-            editMenu.DropDownItems.AddRange(new ToolStripItem[] { undoItem, redoItem, originalItem });
+            editMenu.DropDownItems.AddRange(new ToolStripItem[] { undoItem, redoItem, originalItem, cropItem });
             undoItem.ShortcutKeys = Keys.Control | Keys.Z;
             redoItem.ShortcutKeys = Keys.Control | Keys.Y;
         }
