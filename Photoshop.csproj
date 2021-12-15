@@ -31,6 +31,18 @@
     <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>packages\Castle.Core.3.2.0\lib\net40-client\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.3.2.2.0\lib\net40\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Conventions, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.Extensions.Conventions.3.2.0.0\lib\net40\Ninject.Extensions.Conventions.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Factory, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.Extensions.Factory.3.2.1.0\lib\net40\Ninject.Extensions.Factory.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Windows.Forms" />
@@ -38,40 +50,44 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\ImageFormats.cs" />
-    <Compile Include="Data\Pixel.cs" />
-    <Compile Include="Filters\ColorParameters.cs" />
-    <Compile Include="Filters\ContrastParameters.cs" />
-    <Compile Include="Filters\EmptyParameters.cs" />
-    <Compile Include="Filters\Parameters\ParametersHandler.cs" />
-    <Compile Include="Filters\PixelFilter.cs" />
-    <Compile Include="Filters\LighteningParameters.cs" />
-    <Compile Include="Filters\Parameters\ParameterInfo.cs" />
-    <Compile Include="Filters\Parameters\ParametrizedFilter.cs" />
-    <Compile Include="Filters\Transform\FreeTransformer.cs" />
-    <Compile Include="Filters\Transform\ITransformer.cs" />
-    <Compile Include="Filters\Transform\RotateTransformer.cs" />
-    <Compile Include="Filters\Transform\RotationParameters.cs" />
-    <Compile Include="Filters\Transform\ScaleParameters.cs" />
-    <Compile Include="Filters\Transform\ScaleTransform.cs" />
-    <Compile Include="Filters\Transform\TransformFilter.cs" />
-    <Compile Include="Filters\Transform\TransformFilter%28TParameters%29.cs" />
-    <Compile Include="Main.cs" />
-    <Compile Include="UndoRedo\UndoRedoHistory.cs" />
-    <Compile Include="Window\MainWindow.cs">
+    <Compile Include="Domain\ImageFormats.cs" />
+    <Compile Include="Domain\Pixel.cs" />
+    <Compile Include="Application\Filters\ColorParameters.cs" />
+    <Compile Include="Application\Filters\ContrastParameters.cs" />
+    <Compile Include="Application\Filters\EmptyParameters.cs" />
+    <Compile Include="Application\Filters\Parameters\IParameters.cs" />
+    <Compile Include="Application\Filters\Parameters\ParametersHandler.cs" />
+    <Compile Include="Application\Filters\PixelFilter.cs" />
+    <Compile Include="Application\Filters\LighteningParameters.cs" />
+    <Compile Include="Application\Filters\Parameters\ParameterInfo.cs" />
+    <Compile Include="Application\Filters\Parameters\ParametrizedFilter.cs" />
+    <Compile Include="Application\Filters\Transform\FreeTransformer.cs" />
+    <Compile Include="Application\Filters\Transform\ITransformer.cs" />
+    <Compile Include="Application\Filters\Transform\RotateTransformer.cs" />
+    <Compile Include="Application\Filters\Transform\RotationParameters.cs" />
+    <Compile Include="Application\Filters\Transform\ScaleParameters.cs" />
+    <Compile Include="Application\Filters\Transform\ScaleTransform.cs" />
+    <Compile Include="Application\Filters\Transform\TransformFilter.cs" />
+    <Compile Include="Application\Filters\Transform\TransformFilter%28TParameters%29.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Infrastructure\UndoRedo\UndoRedoHistory.cs" />
+    <Compile Include="UserInterface\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Data\Photo.cs" />
-    <Compile Include="Filters\IFilter.cs" />
-    <Compile Include="Data\Convertors.cs" />
+    <Compile Include="Domain\Photo.cs" />
+    <Compile Include="Application\Filters\IFilter.cs" />
+    <Compile Include="Domain\Convertors.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Content Include="raccoons.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Window\MainWindow.resx">
+    <EmbeddedResource Include="UserInterface\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
