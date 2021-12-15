@@ -71,6 +71,9 @@
     <Compile Include="Application\Filters\Transform\TransformFilter%28TParameters%29.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Infrastructure\UndoRedo\UndoRedoHistory.cs" />
+    <Compile Include="UserInterface\CropController.cs" />
+    <Compile Include="UserInterface\ImageController.cs" />
+    <Compile Include="UserInterface\MenuStripCreater.cs" />
     <Compile Include="UserInterface\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -13,22 +13,23 @@ namespace MyPhotoshop
         {
             var container = new StandardKernel();
             container.Bind<MainWindow>().ToSelf().InSingletonScope()
-                .OnActivation(w => {
-                    w.AddFilter(new PixelFilter<LighteningParameters>("Осветление/затемнение",
-                (pixel, parameters) => Pixel.Trim(pixel * (parameters.Coefficient / 50))));
-                    w.AddFilter(new PixelFilter<ColorParameters>("Цветовой баланс",
-                    (pixel, parameters) =>
-                    {
-                        var r = Pixel.Trim(pixel.R + parameters.R * 128 / 100);
-                        var g = Pixel.Trim(pixel.G + parameters.G * 128 / 100);
-                        var b = Pixel.Trim(pixel.B + parameters.B * 128 / 100);
-                        return new Pixel(r, g, b);
-                    }));
-                    w.AddFilter(new PixelFilter<ContrastParameters>("Контрастность",
-                (pixel, parameters) =>
+                .OnActivation(w =>
                 {
-                    return Pixel.Trim((pixel * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient));
-                }));
+                    w.AddFilter(new PixelFilter<LighteningParameters>("Осветление/затемнение",
+                        (pixel, parameters) => Pixel.Trim(pixel * (parameters.Coefficient / 50))));
+                    w.AddFilter(new PixelFilter<ColorParameters>("Цветовой баланс",
+                        (pixel, parameters) =>
+                        {
+                            var r = Pixel.Trim(pixel.R + parameters.R * 128 / 100);
+                            var g = Pixel.Trim(pixel.G + parameters.G * 128 / 100);
+                            var b = Pixel.Trim(pixel.B + parameters.B * 128 / 100);
+                            return new Pixel(r, g, b);
+                        }));
+                    w.AddFilter(new PixelFilter<ContrastParameters>("Контрастность",
+                        (pixel, parameters) =>
+                        {
+                            return Pixel.Trim((pixel * 100 - 128 * parameters.Coefficient) / (100 - parameters.Coefficient));
+                        }));
                     w.AddFilter(new PixelFilter<EmptyParameters>("Оттенки серого",
                         (pixel, parameters) =>
                         {
@@ -56,7 +57,7 @@ namespace MyPhotoshop
                     w.AddFilter(new TransformFilter<ScaleParameters>("Увеличить/уменьшить",
                         new ScaleTransformer()));
                 });
-            var window = container.Get<MainWindow>();           
+            var window = container.Get<MainWindow>();
             Application.Run(window);
         }
     }
