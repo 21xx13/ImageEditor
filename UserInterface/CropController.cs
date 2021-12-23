@@ -9,9 +9,9 @@ namespace MyPhotoshop
 {
     public static class CropController
     {
-        static int crpX, crpY, rectW, rectH;
-        static readonly Pen crpPen = new Pen(Color.White);
-        static PictureBox imageArea;
+        private static int crpX, crpY, rectW, rectH;
+        private static readonly Pen crpPen = new Pen(Color.White);
+        private static PictureBox imageArea;
 
         public static void SetImage(PictureBox image) {
             imageArea = image;

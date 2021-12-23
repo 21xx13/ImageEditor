@@ -59,7 +59,7 @@
     <Compile Include="Application\Filters\Parameters\ParametersHandler.cs" />
     <Compile Include="Application\Filters\PixelFilter.cs" />
     <Compile Include="Application\Filters\LighteningParameters.cs" />
-    <Compile Include="Application\Filters\Parameters\ParameterInfo.cs" />
+    <Compile Include="Application\Filters\Parameters\ParameterData.cs" />
     <Compile Include="Application\Filters\Parameters\ParametrizedFilter.cs" />
     <Compile Include="Application\Filters\Transform\FreeTransformer.cs" />
     <Compile Include="Application\Filters\Transform\ITransformer.cs" />

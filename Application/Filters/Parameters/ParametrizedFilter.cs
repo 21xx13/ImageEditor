@@ -9,7 +9,7 @@ namespace MyPhotoshop
         where TParameters : new()
     {
         readonly ParametersHandler<TParameters> handler = new ParametersHandler<TParameters>();
-        public ParameterInfo[] GetParameters() => handler.GetDescription();
+        public ParameterData[] GetParameters() => handler.GetDescription();
 
         public Photo Process(Photo photo, double[] values)
         {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyPhotoshop
 {
-    public class ParameterInfo: Attribute
+    public class ParameterData: Attribute
     {
         public string Name;
         public double DefaultValue;

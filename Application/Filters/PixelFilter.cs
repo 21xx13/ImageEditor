@@ -30,6 +30,5 @@ namespace MyPhotoshop
         {
             return name;
         }
-
     }
 }

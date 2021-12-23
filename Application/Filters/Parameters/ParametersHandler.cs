@@ -10,18 +10,18 @@ namespace MyPhotoshop
         where TParameters: new()
     {
         readonly static PropertyInfo[] properties;
-        readonly static ParameterInfo[] descriptions;
+        readonly static ParameterData[] descriptions;
 
         static ParametersHandler()
         {
             properties = typeof(TParameters).GetProperties()
-                .Where(x => x.GetCustomAttributes(typeof(ParameterInfo), false).Length > 0).ToArray();
+                .Where(x => x.GetCustomAttributes(typeof(ParameterData), false).Length > 0).ToArray();
 
             descriptions = typeof(TParameters).GetProperties()
-                   .Select(x => x.GetCustomAttributes(typeof(ParameterInfo), false))
+                   .Select(x => x.GetCustomAttributes(typeof(ParameterData), false))
                    .Where(x => x.Length > 0)
                    .Select(z => z[0])
-                   .Cast<ParameterInfo>()
+                   .Cast<ParameterData>()
                    .ToArray();
         }
         public TParameters CreateParameters(double[] values)
@@ -35,6 +35,6 @@ namespace MyPhotoshop
             return parameters;
         }
 
-        public ParameterInfo[] GetDescription() => descriptions;
+        public ParameterData[] GetDescription() => descriptions;
     }
 }

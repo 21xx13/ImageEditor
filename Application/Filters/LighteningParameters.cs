@@ -5,10 +5,9 @@ using System.Text;
 
 namespace MyPhotoshop
 {
-    public class LighteningParameters: IParameters
+    public class LighteningParameters : IParameters
     {
-
-        [ParameterInfo(Name = "Коэффициент", MaxValue = 100, MinValue = 0, Increment = 1, DefaultValue = 50)]
+        [ParameterData(Name = "Коэффициент", MaxValue = 100, MinValue = 0, Increment = 1, DefaultValue = 50)]
         public double Coefficient { get; set; }
     }
 }
