@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Ninject;
 using Ninject.Extensions.Factory;
 using Ninject.Extensions.Conventions;
+
 namespace MyPhotoshop
 {
     class Program
@@ -15,7 +16,7 @@ namespace MyPhotoshop
             container.Bind<MainWindow>().ToSelf().InSingletonScope()
                 .OnActivation(w =>
                 {
-                    w.AddFilter(new PixelFilter<LighteningParameters>("Осветление/затемнение",
+                    w.AddFilter(new PixelFilter<StandardParameters>("Осветление/затемнение",
                         (pixel, parameters) => Pixel.Trim(pixel * (parameters.Coefficient / 50))));
                     w.AddFilter(new PixelFilter<ColorParameters>("Цветовой баланс",
                         (pixel, parameters) =>

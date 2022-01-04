@@ -1,5 +1,3 @@
-
-
 namespace MyPhotoshop
 {
     public class Photo

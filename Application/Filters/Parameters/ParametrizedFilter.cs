@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MyPhotoshop
+﻿namespace MyPhotoshop
 {
     public abstract class ParametrizedFilter<TParameters> : IFilter
         where TParameters : new()
