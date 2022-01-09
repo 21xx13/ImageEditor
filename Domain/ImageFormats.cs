@@ -14,7 +14,7 @@ namespace MyPhotoshop
 
         private static string GetFilter()
         {
-            return string.Join("|", Formats.Select(e => string.Format("{0} Image |*.{1}",
+            return "JPG Image |*.jpg|" + string.Join("|", Formats.Select(e => string.Format("{0} Image |*.{1}",
                 e.ToString().ToUpper(), e.ToString().ToLower())));
         }
 
