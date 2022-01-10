@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace MyPhotoshop
 {
     public static class Filters
     {
+        [Filter]
         public static IFilter LighteningFilter
         {
             get => new PixelFilter<StandardParameters>("Осветление/затемнение",
                 (pixel, parameters) => Pixel.Trim(pixel * (parameters.Coefficient / 50)));
         }
+
+        [Filter]
         public static IFilter ColorFilter
         {
             get => new PixelFilter<ColorParameters>("Цветовой баланс",
@@ -24,6 +24,8 @@ namespace MyPhotoshop
                     return new Pixel(r, g, b);
                 });
         }
+
+        [Filter]
         public static IFilter ContrastFilter
         {
             get => new PixelFilter<ContrastParameters>("Контрастность",
@@ -33,6 +35,7 @@ namespace MyPhotoshop
                 });
         }
 
+        [Filter]
         public static IFilter GrayFilter
         {
             get => new PixelFilter<EmptyParameters>("Оттенки серого",
@@ -43,6 +46,7 @@ namespace MyPhotoshop
                 });
         }
 
+        [Filter]
         public static IFilter SepiaFilter
         {
             get => new PixelFilter<EmptyParameters>("Сепия",
@@ -55,28 +59,36 @@ namespace MyPhotoshop
                     ));
                 });
         }
+
+        [Filter]
         public static IFilter NegativeFilter
         {
             get => new PixelFilter<EmptyParameters>("Негатив", (pixel, parameters) => Pixel.Trim(255 - pixel));
         }
 
+        [Filter]
         public static IFilter HorizontalFlip
         {
             get => new TransformFilter("Отразить по горизонтали", size => size,
             (point, size) => new Point(size.Width - point.X - 1, point.Y)
             );
         }
+
+        [Filter]
         public static IFilter ClockwiseRotate
         {
             get => new TransformFilter("Повернуть по ч.с.", size => new Size(size.Height, size.Width),
             (point, size) => new Point(point.Y, point.X));
         }
+
+        [Filter]
         public static IFilter RotateFilter
         {
             get => new TransformFilter<RotationParameters>("Свободное вращение",
             new RotateTransformer());
         }
 
+        [Filter]
         public static IFilter ScaleFilter
         {
             get => new TransformFilter<ScaleParameters>("Увеличить/уменьшить",
